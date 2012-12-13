@@ -1,5 +1,9 @@
 package com.pearson.lagp.v3;
 
+import java.io.IOException;
+
+import org.anddev.andengine.audio.music.Music;
+import org.anddev.andengine.audio.music.MusicFactory;
 import org.anddev.andengine.engine.Engine;
 import org.anddev.andengine.engine.camera.Camera;
 import org.anddev.andengine.engine.options.EngineOptions;
@@ -36,6 +40,7 @@ public class StartActivity extends BaseGameActivity {
 	private TextureRegion mSplashTextureRegion;
 	private TiledTextureRegion mBatTextureRegion;
 	private Handler mHandler;
+	public Music backgroundMusic0;
 
 	// ===========================================================
 	// Constructors
@@ -53,7 +58,7 @@ public class StartActivity extends BaseGameActivity {
 	public Engine onLoadEngine() {
 		mHandler = new Handler();
 		this.mCamera = new Camera(0, 0, CAMERA_WIDTH, CAMERA_HEIGHT);
-		return new Engine(new EngineOptions(true, ScreenOrientation.LANDSCAPE, new RatioResolutionPolicy(CAMERA_WIDTH, CAMERA_HEIGHT), this.mCamera));
+		return new Engine(new EngineOptions(true, ScreenOrientation.LANDSCAPE, new RatioResolutionPolicy(CAMERA_WIDTH, CAMERA_HEIGHT), this.mCamera).setNeedsSound(true).setNeedsMusic(true));
 	}
 
 	@Override
@@ -66,6 +71,20 @@ public class StartActivity extends BaseGameActivity {
 		//this.mBatTextureRegion = TextureRegionFactory.createTiledFromAsset(this.mTexture, this, "bat_tiled.png", 0, 513, 2, 2);
 		this.mEngine.getTextureManager().loadTexture(this.mTexture);
 		this.mEngine.getTextureManager().loadTexture(this.mBatTexture);
+		
+		MusicFactory.setAssetBasePath("mfx/");
+		
+		try {
+			backgroundMusic0 = MusicFactory.createMusicFromAsset(mEngine
+					.getMusicManager(), this, "JB.wav");
+			backgroundMusic0.setLooping(true);
+		} catch (IllegalStateException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -81,18 +100,20 @@ public class StartActivity extends BaseGameActivity {
 		/* Create the background sprite and add it to the scene. */
 		final Sprite splash = new Sprite(centerX, centerY, this.mSplashTextureRegion);
 		scene.getLastChild().attachChild(splash);
-		
+		backgroundMusic0.play();
 
 		return scene;
 	}
 
 	@Override
 	public void onLoadComplete() {
-		mHandler.postDelayed(mLaunchTask,3000);
+		mHandler.postDelayed(mLaunchTask,30000);
+		
 	}
 
     private Runnable mLaunchTask = new Runnable() {
         public void run() {
+        	backgroundMusic0.stop();
     		Intent myIntent = new Intent(StartActivity.this, MainMenuActivity.class);
     		StartActivity.this.startActivity(myIntent);
     		StartActivity.this.finish();

@@ -1,10 +1,13 @@
 package com.pearson.lagp.v3;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Random;
 
 import javax.microedition.khronos.opengles.GL10;
 
+import org.anddev.andengine.audio.music.Music;
+import org.anddev.andengine.audio.music.MusicFactory;
 import org.anddev.andengine.engine.Engine;
 import org.anddev.andengine.engine.camera.Camera;
 import org.anddev.andengine.engine.camera.hud.controls.AnalogOnScreenControl;
@@ -105,6 +108,7 @@ public class Level1Activity extends BaseGameActivity {
 	private int i3;
 	private int i4;
 	private int i5;
+	private Music backgroundMusic;
 
 	private Sprite ChickenPlaying;
 
@@ -133,7 +137,7 @@ public class Level1Activity extends BaseGameActivity {
 	public Engine onLoadEngine() {
 		mHandler = new Handler();
 		this.mCamera = new Camera(0, 0, CAMERA_WIDTH, CAMERA_HEIGHT);
-		return new Engine(new EngineOptions(true, ScreenOrientation.LANDSCAPE, new RatioResolutionPolicy(CAMERA_WIDTH, CAMERA_HEIGHT), this.mCamera));
+		return new Engine(new EngineOptions(true, ScreenOrientation.LANDSCAPE, new RatioResolutionPolicy(CAMERA_WIDTH, CAMERA_HEIGHT), this.mCamera).setNeedsSound(true).setNeedsMusic(true));
 	}
 
 	@Override
@@ -195,7 +199,19 @@ public class Level1Activity extends BaseGameActivity {
 		mgameOverTextureRegion = TextureRegionFactory.createFromAsset(this.mgameOverTexture, this, "gameOver.png", 0, 0);
 		mEngine.getTextureManager().loadTexture(this.mgameOverTexture);
 
-
+		MusicFactory.setAssetBasePath("mfx/");
+		
+		try {
+			backgroundMusic = MusicFactory.createMusicFromAsset(mEngine
+					.getMusicManager(), this, "panther.wav");
+			backgroundMusic.setLooping(true);
+		} catch (IllegalStateException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		
 	}
@@ -215,6 +231,7 @@ public class Level1Activity extends BaseGameActivity {
 
 		//final Sprite Test = new Sprite(290, 240 ,mTestTextureRegion);
 
+		backgroundMusic.play();
 
 		final PhysicsHandler physicsHandler = new PhysicsHandler(Chicken);
 		Chicken.registerUpdateHandler(physicsHandler);
@@ -296,7 +313,10 @@ public class Level1Activity extends BaseGameActivity {
 				
 				if (lives==0){life.setText(String.valueOf("0"));
 				scene.getLastChild().attachChild(gameOver);
-					mHandler.postDelayed(mLaunchOptionsTask, 500);}
+					mHandler.postDelayed(mLaunchOptionsTask, 500);
+					backgroundMusic.stop();	
+				}
+				
 
 
 			}

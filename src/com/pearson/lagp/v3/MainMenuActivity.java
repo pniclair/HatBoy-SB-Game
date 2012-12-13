@@ -44,6 +44,7 @@ public class MainMenuActivity extends BaseGameActivity implements IOnMenuItemCli
 	protected static final int MENU_PLAY = 100;
 	protected static final int MENU_INSTRUCTION = MENU_PLAY + 1;
 	protected static final int QUIT = MENU_INSTRUCTION + 1;
+	protected static final int NOCLICK = QUIT + 1;
 
 
 	// ===========================================================
@@ -69,6 +70,7 @@ public class MainMenuActivity extends BaseGameActivity implements IOnMenuItemCli
 	protected TextureRegion mMenuScoresTextureRegion;
 	protected TextureRegion mMenuOptionsTextureRegion;
 	protected TextureRegion mMenuHelpTextureRegion;
+	protected TextureRegion noClick;
 	private boolean popupDisplayed;
 
 	// ===========================================================
@@ -181,6 +183,12 @@ public class MainMenuActivity extends BaseGameActivity implements IOnMenuItemCli
 				/* End Activity. */
 				this.finish();
 				return true;
+				
+				
+			case NOCLICK:
+				/* End Activity. */
+				mHandler.postDelayed(mHereWeGo, 100);
+				return true;
 			
 
 			default:
@@ -206,6 +214,10 @@ public class MainMenuActivity extends BaseGameActivity implements IOnMenuItemCli
 		final IMenuItem optionsMenuItem = new ColorMenuItemDecorator( new TextMenuItem(QUIT, mFont, "Quit"), 0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f);
 		optionsMenuItem.setBlendFunction(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 		this.mStaticMenuScene.addMenuItem(optionsMenuItem);
+		
+		final IMenuItem noClick = new ColorMenuItemDecorator( new TextMenuItem(NOCLICK, mFont, "You do not want to click here!!!"), 0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f);
+		optionsMenuItem.setBlendFunction(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
+		this.mStaticMenuScene.addMenuItem(noClick);
 
 		this.mStaticMenuScene.buildAnimations();
 		
@@ -226,6 +238,14 @@ public class MainMenuActivity extends BaseGameActivity implements IOnMenuItemCli
 
 		this.mPopUpMenuScene.setOnMenuItemClickListener(this);
 	}
+	
+	
+    private Runnable mHereWeGo = new Runnable() {
+        public void run() {
+    		Intent myIntent = new Intent(MainMenuActivity.this, StartActivity.class);
+    		MainMenuActivity.this.startActivity(myIntent);
+        }
+     };
 
     private Runnable mLaunchLevel1Task = new Runnable() {
         public void run() {
