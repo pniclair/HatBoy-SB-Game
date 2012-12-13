@@ -1,4 +1,4 @@
-package com.pearson.lagp.v3;
+package com.hatboy.chicken;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -77,6 +77,7 @@ public class Level1Activity extends BaseGameActivity {
 	private Texture mCarBlueTexture;
 	private Texture mWormTexture;
 	private Texture mgameOverTexture;
+	private Texture mDeadChickenTexture; 
 	
 	private Texture mOnScreenControlTexture;
 	private TextureRegion mOnScreenControlBaseTextureRegion;
@@ -89,6 +90,7 @@ public class Level1Activity extends BaseGameActivity {
 	private TiledTextureRegion mWormTextureRegion;
 	private TextureRegion mTestTextureRegion;
 	private TextureRegion mgameOverTextureRegion;
+	private TextureRegion mDeadChickenTextureRegion;
 
 
 	private AnimatedSprite[] vehicle1 = new AnimatedSprite[500];
@@ -96,6 +98,7 @@ public class Level1Activity extends BaseGameActivity {
 	private AnimatedSprite[] vehicle3= new AnimatedSprite[500];
 	private AnimatedSprite[] vehicle4 = new AnimatedSprite[500];
 	private AnimatedSprite[] worm = new AnimatedSprite[500];
+	private AnimatedSprite[] deadChicken = new AnimatedSprite[20];
 
 	private Handler mHandler;
 	private int nDanger1;
@@ -103,12 +106,18 @@ public class Level1Activity extends BaseGameActivity {
 	private int nDanger3;
 	private int nDanger4;
 	private int nfood;
+	private int ndead;
+	
 	private int i1;
 	private int i2;
 	private int i3;
 	private int i4;
 	private int i5;
-	private Music backgroundMusic;
+	private int d;
+	private float deadX=0;
+	private float deadY=0;
+	
+	private Music crashMusic;
 
 	private Sprite ChickenPlaying;
 
@@ -174,6 +183,11 @@ public class Level1Activity extends BaseGameActivity {
 		mTruckBlueTextureRegion = TextureRegionFactory.createTiledFromAsset(this.mTruckBlueTexture, this, "truckBlueLeft.png", 0, 0, 1, 1);
 		mEngine.getTextureManager().loadTexture(this.mTruckBlueTexture);
 
+		mDeadChickenTexture = new Texture(512, 256, TextureOptions.DEFAULT);
+		mDeadChickenTextureRegion = TextureRegionFactory.createFromAsset(this.mDeadChickenTexture, this, "chickenDead.png", 0, 0);
+		mEngine.getTextureManager().loadTexture(this.mDeadChickenTexture);
+		
+		
 
 		mTruckRedTexture = new Texture(512, 256, TextureOptions.DEFAULT);
 		mTruckRedTextureRegion = TextureRegionFactory.createTiledFromAsset(this.mTruckRedTexture, this, "truckRedLeft.png", 0, 0, 1, 1);
@@ -202,9 +216,9 @@ public class Level1Activity extends BaseGameActivity {
 		MusicFactory.setAssetBasePath("mfx/");
 		
 		try {
-			backgroundMusic = MusicFactory.createMusicFromAsset(mEngine
-					.getMusicManager(), this, "panther.wav");
-			backgroundMusic.setLooping(true);
+			crashMusic = MusicFactory.createMusicFromAsset(mEngine
+					.getMusicManager(), this, "carCrash.wav");
+			crashMusic.setLooping(false);
 		} catch (IllegalStateException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -227,11 +241,12 @@ public class Level1Activity extends BaseGameActivity {
 		final Sprite background = new Sprite(centerX, -centerY, mBackgroundTextureRegion);
 		final Sprite Chicken = new Sprite(220, 270,mChickenTextureRegion);
 		final Sprite gameOver = new Sprite(135, 100,mgameOverTextureRegion);
+		
 
 
 		//final Sprite Test = new Sprite(290, 240 ,mTestTextureRegion);
 
-		backgroundMusic.play();
+		//crashMusic.play();
 
 		final PhysicsHandler physicsHandler = new PhysicsHandler(Chicken);
 		Chicken.registerUpdateHandler(physicsHandler);
@@ -265,6 +280,7 @@ public class Level1Activity extends BaseGameActivity {
 		nDanger3 = 0;
 		nDanger4 = 0;
 		nfood=0;
+		ndead=0;
 		//scene.getLastChild().attachChild(background);
 		mHandler.postDelayed(mStartVehicle1,1000);
 		mHandler.postDelayed(mStartVehicle2,1000);
@@ -290,18 +306,37 @@ public class Level1Activity extends BaseGameActivity {
 			@Override
 			public void onUpdate(final float pSecondsElapsed) {
 
+				if (Chicken.getY()>270)Chicken.setPosition(Chicken.getX(), Chicken.getY()-5f);
+				if (Chicken.getY()<0)Chicken.setPosition(Chicken.getX(), Chicken.getY()+5f);
+				
 
 				if(vehicle1[i1].collidesWith(Chicken) || vehicle2[i2].collidesWith(Chicken)||vehicle3[i3].collidesWith(Chicken) || vehicle4[i4].collidesWith(Chicken))
 				{lives--;
+				deadX= Chicken.getX();
+				deadY= Chicken.getY();
+				final Sprite dead = new Sprite(deadX, deadY,mDeadChickenTextureRegion);
+				
+				scene.getLastChild().attachChild(dead);
 				Chicken.setPosition(220, 270);
+				scene.getLastChild().attachChild(Chicken);
+				crashMusic.play();
+				
+				
 
 				life.setText(String.valueOf(lives));
 				}
 				if (i1>1){
 					if(vehicle1[i1-1].collidesWith(Chicken) || vehicle2[i2-1].collidesWith(Chicken)||vehicle3[i3-1].collidesWith(Chicken) || vehicle4[i4-1].collidesWith(Chicken))
 					{lives--;
-					Chicken.setPosition(220, 270);
+					deadX= Chicken.getX();
+					deadY= Chicken.getY();
+					final Sprite dead = new Sprite(deadX, deadY,mDeadChickenTextureRegion);
+					
 					life.setText(String.valueOf(lives));
+					crashMusic.play();
+					scene.getLastChild().attachChild(dead);
+					Chicken.setPosition(220, 270);
+					scene.getLastChild().attachChild(Chicken);
 					}}
 
 				if(worm[i5].collidesWith(Chicken) )
@@ -313,8 +348,10 @@ public class Level1Activity extends BaseGameActivity {
 				
 				if (lives==0){life.setText(String.valueOf("0"));
 				scene.getLastChild().attachChild(gameOver);
+				score = new ChangeableText(305, 154, mFont, String.valueOf(scoreCount));
+				scene.getLastChild().attachChild(score);
 					mHandler.postDelayed(mLaunchOptionsTask, 500);
-					backgroundMusic.stop();	
+					crashMusic.stop();	
 				}
 				
 
@@ -339,6 +376,10 @@ public class Level1Activity extends BaseGameActivity {
 	@Override
 	public void onLoadComplete() {
 	}
+	
+
+	
+	
 	private Runnable mStartFood = new Runnable() {
 		public void run() {
 			 i5 = nfood++;
@@ -375,7 +416,7 @@ public class Level1Activity extends BaseGameActivity {
 				vehicle1[i1].registerEntityModifier(
 						new SequenceEntityModifier (
 								new AlphaModifier(1.0f, 0.0f, 1.0f),
-								new MoveModifier(3.0f, vehicle1[i1].getX(), -200.0f, 
+								new MoveModifier(3.0f, vehicle1[i1].getX(), -500.0f, 
 										vehicle1[i1].getY(), startY)));
 				scene.getLastChild().attachChild(vehicle1[i1]);
 

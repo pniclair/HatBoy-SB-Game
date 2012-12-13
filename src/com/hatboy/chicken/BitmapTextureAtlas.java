@@ -1,4 +1,4 @@
-package com.pearson.lagp.v3;
+package com.hatboy.chicken;
 
 public class BitmapTextureAtlas {
 

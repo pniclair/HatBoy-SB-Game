@@ -1,4 +1,4 @@
-package com.pearson.lagp.v3;
+package com.hatboy.chicken;
 
 import javax.microedition.khronos.opengles.GL10;
 
@@ -88,7 +88,7 @@ public class OptionsActivity extends BaseGameActivity implements IOnMenuItemClic
 		this.mFontTexture = new Texture(256, 256, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
 
 		FontFactory.setAssetBasePath("font/");
-		this.mFont = FontFactory.createFromAsset(this.mFontTexture, this, "Flubber.ttf", 32, true, Color.WHITE);
+		this.mFont = FontFactory.createFromAsset(this.mFontTexture, this, "Flubber.ttf", 20, true, Color.WHITE);
 		this.mEngine.getTextureManager().loadTexture(this.mFontTexture);
 		this.mEngine.getFontManager().loadFont(this.mFont);
 

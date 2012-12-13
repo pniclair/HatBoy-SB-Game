@@ -1,4 +1,4 @@
-package com.pearson.lagp.v3;
+package com.hatboy.chicken;
 
 import javax.microedition.khronos.opengles.GL10;
 
@@ -41,10 +41,11 @@ public class MainMenuActivity extends BaseGameActivity implements IOnMenuItemCli
 	private static final int CAMERA_WIDTH = 480;
 	private static final int CAMERA_HEIGHT = 320;
 
-	protected static final int MENU_PLAY = 100;
+	protected static final int NOCLICK = 0;
+	protected static final int MENU_PLAY = NOCLICK+1;
 	protected static final int MENU_INSTRUCTION = MENU_PLAY + 1;
 	protected static final int QUIT = MENU_INSTRUCTION + 1;
-	protected static final int NOCLICK = QUIT + 1;
+	
 
 
 	// ===========================================================
@@ -70,7 +71,7 @@ public class MainMenuActivity extends BaseGameActivity implements IOnMenuItemCli
 	protected TextureRegion mMenuScoresTextureRegion;
 	protected TextureRegion mMenuOptionsTextureRegion;
 	protected TextureRegion mMenuHelpTextureRegion;
-	protected TextureRegion noClick;
+	protected TextureRegion mnoClick;
 	private boolean popupDisplayed;
 
 	// ===========================================================
@@ -98,7 +99,7 @@ public class MainMenuActivity extends BaseGameActivity implements IOnMenuItemCli
 		this.mFontTexture = new Texture(256, 256, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
 
 		FontFactory.setAssetBasePath("font/");
-		this.mFont = FontFactory.createFromAsset(this.mFontTexture, this, "Flubber.ttf", 32, true, Color.WHITE);
+		this.mFont = FontFactory.createFromAsset(this.mFontTexture, this, "Flubber.ttf", 20, true, Color.WHITE);
 		this.mEngine.getTextureManager().loadTexture(this.mFontTexture);
 		this.mEngine.getFontManager().loadFont(this.mFont);
 
@@ -203,21 +204,23 @@ public class MainMenuActivity extends BaseGameActivity implements IOnMenuItemCli
 	protected void createStaticMenuScene() {
 		this.mStaticMenuScene = new MenuScene(this.mCamera);
 
-		final IMenuItem playMenuItem = new ColorMenuItemDecorator( new TextMenuItem(MENU_PLAY, mFont, "Play Game"), 0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f);
+		final IMenuItem noClick = new ColorMenuItemDecorator( new TextMenuItem(NOCLICK, mFont, "1. You do not want to click here!!!"), 0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f);
+		noClick.setBlendFunction(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
+		this.mStaticMenuScene.addMenuItem(noClick);
+		
+		final IMenuItem playMenuItem = new ColorMenuItemDecorator( new TextMenuItem(MENU_PLAY, mFont, "2. Play Game"), 0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f);
 		playMenuItem.setBlendFunction(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 		this.mStaticMenuScene.addMenuItem(playMenuItem);
 
-		final IMenuItem scoresMenuItem = new ColorMenuItemDecorator( new TextMenuItem(MENU_INSTRUCTION, mFont, "Instruction"), 0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f);
+		final IMenuItem scoresMenuItem = new ColorMenuItemDecorator( new TextMenuItem(MENU_INSTRUCTION, mFont, "3. Instruction"), 0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f);
 		scoresMenuItem.setBlendFunction(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 		this.mStaticMenuScene.addMenuItem(scoresMenuItem);
 
-		final IMenuItem optionsMenuItem = new ColorMenuItemDecorator( new TextMenuItem(QUIT, mFont, "Quit"), 0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f);
+		final IMenuItem optionsMenuItem = new ColorMenuItemDecorator( new TextMenuItem(QUIT, mFont, "4. Quit"), 0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f);
 		optionsMenuItem.setBlendFunction(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 		this.mStaticMenuScene.addMenuItem(optionsMenuItem);
 		
-		final IMenuItem noClick = new ColorMenuItemDecorator( new TextMenuItem(NOCLICK, mFont, "You do not want to click here!!!"), 0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f);
-		optionsMenuItem.setBlendFunction(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
-		this.mStaticMenuScene.addMenuItem(noClick);
+
 
 		this.mStaticMenuScene.buildAnimations();
 		
