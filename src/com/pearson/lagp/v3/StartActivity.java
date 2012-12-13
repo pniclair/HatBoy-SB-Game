@@ -88,7 +88,7 @@ public class StartActivity extends BaseGameActivity {
 
 	@Override
 	public void onLoadComplete() {
-		mHandler.postDelayed(mLaunchTask,5000);
+		mHandler.postDelayed(mLaunchTask,3000);
 	}
 
     private Runnable mLaunchTask = new Runnable() {
