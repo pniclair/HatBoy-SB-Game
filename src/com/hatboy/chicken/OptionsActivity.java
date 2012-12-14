@@ -1,3 +1,14 @@
+
+// Game application: Developped by Satish & Percy Niclair
+// Date Dec 13, 2012
+// Beware Chicken Ahead, is a Game developed for Android phone and tablets - 
+// Help the chicken to cross the road & hunt the worms.
+
+
+
+// This is the Main Menu Activity
+
+
 package com.hatboy.chicken;
 
 import javax.microedition.khronos.opengles.GL10;
@@ -63,17 +74,8 @@ public class OptionsActivity extends BaseGameActivity implements IOnMenuItemClic
 	public boolean isMusicOn = true;
 	public boolean isEffectsOn = true;
 
-	// ===========================================================
-	// Constructors
-	// ===========================================================
 
-	// ===========================================================
-	// Getter & Setter
-	// ===========================================================
-
-	// ===========================================================
-	// Methods for/from SuperClass/Interfaces
-	// ===========================================================
+	//Override the onLoadEngine
 
 	@Override
 	public Engine onLoadEngine() {
@@ -82,6 +84,7 @@ public class OptionsActivity extends BaseGameActivity implements IOnMenuItemClic
 		return new Engine(new EngineOptions(true, ScreenOrientation.LANDSCAPE, new RatioResolutionPolicy(CAMERA_WIDTH, CAMERA_HEIGHT), this.mCamera));
 	}
 
+	//Override the onLoadRessources class 
 	@Override
 	public void onLoadResources() {
 		/* Load Font/Textures. */
@@ -102,6 +105,7 @@ public class OptionsActivity extends BaseGameActivity implements IOnMenuItemClic
 		mTurnEffectsOff = new TextMenuItem(MENU_EFFECTS, mFont, "CONTINUE");
 	}
 
+	//Override the onLoadScene
 	@Override
 	public Scene onLoadScene() {
 		this.mEngine.registerUpdateHandler(new FPSLogger());
@@ -132,6 +136,7 @@ public class OptionsActivity extends BaseGameActivity implements IOnMenuItemClic
 		mOptionsMenuScene.registerEntityModifier(new ScaleAtModifier(0.5f, 0.0f, 1.0f, CAMERA_WIDTH/2, CAMERA_HEIGHT/2));
 	}
 
+	// Overide the onMenuClick class  
 	@Override
 	public boolean onMenuItemClicked(final MenuScene pMenuScene, final IMenuItem pMenuItem, final float pMenuItemLocalX, final float pMenuItemLocalY) {
 		switch(pMenuItem.getID()) {

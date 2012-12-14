@@ -1,3 +1,14 @@
+
+// Game application: Developped by Satish & Percy Niclair
+// Date Dec 13, 2012
+// Beware Chicken Ahead, is a Game developed for Android phone and tablets - 
+// Help the chicken to cross the road & hunt the worms.
+
+
+
+// This is the Main Menu Activity
+
+
 package com.hatboy.chicken;
 
 import javax.microedition.khronos.opengles.GL10;
@@ -247,6 +258,7 @@ public class MainMenuActivity extends BaseGameActivity implements IOnMenuItemCli
         public void run() {
     		Intent myIntent = new Intent(MainMenuActivity.this, StartActivity.class);
     		MainMenuActivity.this.startActivity(myIntent);
+    		MainMenuActivity.this.finish();
         }
      };
 
@@ -254,6 +266,7 @@ public class MainMenuActivity extends BaseGameActivity implements IOnMenuItemCli
         public void run() {
     		Intent myIntent = new Intent(MainMenuActivity.this, Level1Activity.class);
     		MainMenuActivity.this.startActivity(myIntent);
+    		MainMenuActivity.this.finish();
         }
      };
 
@@ -261,6 +274,7 @@ public class MainMenuActivity extends BaseGameActivity implements IOnMenuItemCli
          public void run() {
      		Intent myIntent = new Intent(MainMenuActivity.this, OptionsActivity.class);
      		MainMenuActivity.this.startActivity(myIntent);
+     		MainMenuActivity.this.finish();
          }
       };
 
